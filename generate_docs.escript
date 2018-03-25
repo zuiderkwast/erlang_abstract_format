@@ -63,8 +63,11 @@ doc_form(F, Form, Comment) ->
                 io:format("Unexpected form: ~s~p~n~n", [Src,Form]),
                 {Src, Form}
         end,
-    ok = io:format(F, "<tr><td>~n```Erlang~n~s~n```~n</td>"
-                      "<td>~n```Erlang~n~p~n```~n</td>"
+    ok = io:format(F, "<tr>"
+                      "<td><div class=\"highlight highlight-source-erlang\">"
+                      "<pre>~n~s~n</pre></div></td>~n"
+                      "<td><div class=\"highlight highlight-source-erlang\">"
+                      "<pre>~n~p~n</pre></div></td>~n"
                       "<td>~s</td></tr>~n",
                    [PP, Abs, Comment]).
 
