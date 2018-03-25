@@ -5,65 +5,68 @@
 main([]) ->
     {ok, Forms} = epp:parse_file("corpus.erl", []),
     {ok, F} = file:open("README.md", [write]),
-    try
-        io:format(F, "~n", []),
-        lists:foldl(fun (Form, Comment) ->
-                        doc_form(F, Form, Comment)
-                    end,
-                    none,            %% Comment on previous line
-                    Forms)
-    after
-        file:close(F)
+    try doc_forms(F, Forms, false)
+    after file:close(F)
     end.
+
+doc_forms(F, [{attribute, _, comment, Comment}, Form | Forms], InTable) ->
+    %% A comment followed by another form.
+    InTable orelse io:format(F, "<table>~n", []),
+    doc_form(F, Form, Comment),
+    doc_forms(F, Forms, true);
+doc_forms(F, [Form | Forms], InTable) ->
+    InTableAfter =
+        case Form of
+            {attribute, _, doc, Doc} ->
+                InTable andalso io:format(F, "</table>~n~n", []),
+                io:format(F, "~s~n~n", [Doc]),
+                false;
+            {attribute, _, file, _M} ->
+                InTable;
+            {eof, _} ->
+                InTable;
+            _ ->
+                InTable orelse io:format(F, "<table>~n", []),
+                doc_form(F, Form, ""),
+                true
+        end,
+    doc_forms(F, Forms, InTableAfter);
+doc_forms(F, [], true) ->
+    io:format(F, "</table>~n", []);
+doc_forms(_F, [], false) ->
+    ok.
 
 doc_form(F, Form, Comment) ->
     {ok, TypeRE} = re:compile(<<"::\\s*(.*)\\.\\n*">>),
-    case Form of
-        {attribute, _, file, _M} ->
-            ok;
-        {eof, _} ->
-            ok;
-        {attribute, _, p, S} when is_list(S) ->
-            io:format(F, "~s~n~n", [S]);
-        {attribute, _, h1, S} when is_list(S) ->
-            io:format(F, "~s~n~s~n~n", [S, lists:duplicate(length(S), $=)]);
-        {attribute, _, h2, S} when is_list(S) ->
-            ok = io:format(F, "~s~n~s~n~n",
-                           [S, lists:duplicate(length(S), $-)]);
-        {attribute, _, defs, {X,Y,Z}} ->
-            io:format(F, "<table><tr><th>~s</th><th>~s</th><th>~s</th></tr>~n",
-                      [X, Y, Z]);
-        {attribute, _, enddefs, []} ->
-            io:format(F, "</table>\n");
-        {attribute, _, comment, S} when is_list(S) ->
-            %% Comments about the following example. Pass on to the next form.
-            S;
-        {attribute, _, record, _} ->
-            %% Uptyped record declaration. When types are present, this is
-            %% followed by a record type declaration form.
-            print(F, erl_pp:form(Form), Form);
-        {attribute, _, type, {{record, RName}, Fields, []}} ->
-            %% Record with typed fields
-            FieldSrcs = lists:map(fun pp_record_field/1, Fields),
-            Indent = lists:duplicate(length(atom_to_list(RName)) + 10, $\s),
-            FieldsSrc = string:join(FieldSrcs, ",\n" ++ Indent),
-            Src = io_lib:format("-record(~p,{~s}).", [RName, FieldsSrc]),
-            print(F, Src, Form);
-        {attribute, _, type, {_Name, T, []}} ->
-            TypeDef  = erl_pp:form(Form),
-            {match, [Src]} = re:run(TypeDef, TypeRE,
-                                    [{capture, all_but_first, binary}]),
-            if is_list(Comment) ->
-                   print(F, Src, T, Comment);
-               true ->
-                   print(F, Src, T)
-            end;
-        _ ->
-            %% Any form
-            Src = erl_pp:form(Form),
-            io:format("Unexpected: ~s~n~p~n", [Src, Form])
-            %print(F, Src, Form)
-    end.
+    {PP, Abs} =
+        case Form of
+            {attribute, _, record, _} ->
+                %% Uptyped record declaration. When types are present, this is
+                %% followed by a record type declaration form.
+                {erl_pp:form(Form), Form};
+            {attribute, _, type, {{record, RName}, Fields, []}} ->
+                %% Record with typed fields. Doesn't seem to be implemented in
+                %% erl_pp so we do our own pretty-printing.
+                FieldSrcs = lists:map(fun pp_record_field/1, Fields),
+                Indent = lists:duplicate(length(atom_to_list(RName)) + 10, $\s),
+                FieldsSrc = string:join(FieldSrcs, ",\n" ++ Indent),
+                Src = io_lib:format("-record(~p,{~s}).", [RName, FieldsSrc]),
+                {Src, Form};
+            {attribute, _, type, {_Name, T, []}} ->
+                TypeDef  = erl_pp:form(Form),
+                {match, [Src]} = re:run(TypeDef, TypeRE,
+                                        [{capture, all_but_first, binary}]),
+                {Src, T};
+            _ ->
+                %% Any form
+                Src = erl_pp:form(Form),
+                io:format("Unexpected form: ~s~p~n~n", [Src,Form]),
+                {Src, Form}
+        end,
+    ok = io:format(F, "<tr><td>~n```Erlang~n~s~n```~n</td>"
+                      "<td>~n```Erlang~n~p~n```~n</td>"
+                      "<td>~s</td></tr>~n",
+                   [PP, Abs, Comment]).
 
 pp_type(T) ->
     pp_type_from_attribute({attribute, 0, type, {t, T, []}}).
@@ -82,9 +85,3 @@ pp_record_field({record_field, _, {atom, _, Name}, Def}) ->
     io_lib:format("~p = ~s", [Name, erl_pp:expr(Def)]);
 pp_record_field({record_field, _, {atom, _, Name}}) ->
     io_lib:format("~p", [Name]).
-
-print(F, Src, Abs) ->
-    ok = io:format(F, "## `~s`~n~n```Erlang~n~p~n```~n~n", [Src, Abs]).
-print(F, Src, Abs, Comment) ->
-    ok = io:format(F, "## `~s`~n~n```Erlang~n~p %% ~s~n```~n~n",
-                   [Src, Abs, Comment]).

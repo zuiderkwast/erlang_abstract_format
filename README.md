@@ -1,403 +1,601 @@
-
 Erlang Abstract Format
 ======================
 
-The Erlang Abstract Format is used in parse trees in various tools, such as the compiler and preprocessor modules shipped with Erlang/OTP. A brief documentation is available at http://erlang.org/doc/apps/erts/absform.html. However, the complete syntax of abstract format is not documented.
+The Erlang Abstract Format is used in parse trees in various tools, such
+as the compiler and preprocessor modules shipped with Erlang/OTP. A brief
+documentation is available at http://erlang.org/doc/apps/erts/absform.html.
+However, the complete syntax of abstract format is not documented.
 
-This is an attempt to document every langugage construct by examples. The examples are generated using Erlang source code, which is parsed to generate the abstract form, and pretty-printed again to generate the Erlang code examples.
+This is an attempt to document every langugage construct by examples.
+The examples are generated using Erlang source code,
+which is parsed to generate the abstract form, and pretty-printed again to
+generate the Erlang code examples.
 
 For a complete insight, see the files corpus.erl and generate_docs.escript
 
-Every form is a tuple. The second element is the line number in the source file.
+Every form is a tuple. The second element is the line number in the source
+file.
 
 Types
 -----
 
-Types, mostly in the order as listed under "Types and their Syntax" on http://erlang.org/doc/reference_manual/typespec.html.
+Types, mostly in the order as listed under "Types and their Syntax"
+on http://erlang.org/doc/reference_manual/typespec.html.
 
 Abstract form syntax for types: `{type, Line, TypeName, TypeParams}`.
 
-## `any()`
-
+<table>
+<tr><td>
 ```Erlang
-{type,28,any,[]}
+any()
 ```
-
-## `none()`
-
+</td><td>
 ```Erlang
-{type,29,none,[]}
+{type,31,any,[]}
 ```
-
-## `pid()`
-
+</td><td></td></tr>
+<tr><td>
 ```Erlang
-{type,30,pid,[]}
+none()
 ```
-
-## `port()`
-
+</td><td>
 ```Erlang
-{type,31,port,[]}
+{type,32,none,[]}
 ```
-
-## `reference()`
-
+</td><td></td></tr>
+<tr><td>
 ```Erlang
-{type,32,reference,[]}
+pid()
 ```
-
-## `[]`
-
+</td><td>
 ```Erlang
-{type,33,nil,[]}
+{type,33,pid,[]}
 ```
-
-## `atom()`
-
+</td><td></td></tr>
+<tr><td>
 ```Erlang
-{type,34,atom,[]}
+port()
 ```
-
-## `<<>>`
-
+</td><td>
 ```Erlang
-{type,37,binary,[{integer,37,0},{integer,37,0}]}
+{type,34,port,[]}
 ```
-
-## `<<_:M>>`
-
+</td><td></td></tr>
+<tr><td>
 ```Erlang
-{type,38,binary,[{var,38,'M'},{integer,38,0}]}
+reference()
 ```
-
-## `<<_:_*N>>`
-
+</td><td>
 ```Erlang
-{type,39,binary,[{integer,39,0},{var,39,'N'}]}
+{type,35,reference,[]}
 ```
-
-## `<<_:M, _:_*N>>`
-
+</td><td></td></tr>
+<tr><td>
 ```Erlang
-{type,40,binary,[{var,40,'M'},{var,40,'N'}]}
+[]
 ```
-
-## `float()`
-
+</td><td>
 ```Erlang
-{type,42,float,[]}
+{type,36,nil,[]}
 ```
-
-## `fun()`
-
+</td><td></td></tr>
+<tr><td>
 ```Erlang
-{type,45,'fun',[]}
+atom()
 ```
-
-## `fun((...) -> integer())`
-
+</td><td>
 ```Erlang
-{type,46,'fun',[{type,46,any},{type,46,integer,[]}]}
+{type,37,atom,[]}
 ```
-
-## `fun(() -> integer())`
-
+</td><td></td></tr>
+<tr><td>
 ```Erlang
-{type,47,'fun',[{type,47,product,[]},{type,47,integer,[]}]}
+<<>>
 ```
-
-## `fun((atom(), atom()) -> integer())`
-
+</td><td>
 ```Erlang
-{type,48,'fun',
-      [{type,48,product,[{type,48,atom,[]},{type,48,atom,[]}]},
-       {type,48,integer,[]}]}
+{type,40,binary,[{integer,40,0},{integer,40,0}]}
 ```
-
-## `integer()`
-
+</td><td></td></tr>
+<tr><td>
 ```Erlang
-{type,51,integer,[]}
+<<_:M>>
 ```
-
-## `42`
-
+</td><td>
 ```Erlang
-{integer,52,42}
+{type,42,binary,[{var,42,'M'},{integer,42,0}]}
 ```
-
-## `1..10`
-
+</td><td>M is a positive integer</td></tr>
+<tr><td>
 ```Erlang
-{type,53,range,[{integer,53,1},{integer,53,10}]}
+<<_:_*N>>
 ```
-
-## `[integer()]`
-
+</td><td>
 ```Erlang
-{type,56,list,[{type,56,integer,[]}]}
+{type,44,binary,[{integer,44,0},{var,44,'N'}]}
 ```
-
-## `maybe_improper_list(integer(), atom())`
-
+</td><td>N is a positive integer</td></tr>
+<tr><td>
 ```Erlang
-{type,57,maybe_improper_list,[{type,57,integer,[]},{type,57,atom,[]}]}
+<<_:M, _:_*N>>
 ```
-
-## `nonempty_improper_list(integer(), atom())`
-
+</td><td>
 ```Erlang
-{type,58,nonempty_improper_list,[{type,58,integer,[]},{type,58,atom,[]}]}
+{type,45,binary,[{var,45,'M'},{var,45,'N'}]}
 ```
-
-## `[integer(), ...]`
-
+</td><td></td></tr>
+<tr><td>
 ```Erlang
-{type,59,nonempty_list,[{type,59,integer,[]}]}
+float()
 ```
-
-## `map()`
-
+</td><td>
 ```Erlang
-{type,62,map,any}
+{type,47,float,[]}
 ```
-
-## `#{}`
-
+</td><td></td></tr>
+<tr><td>
 ```Erlang
-{type,63,map,[]}
+fun()
 ```
-
-## `#{integer() => any()}`
-
+</td><td>
 ```Erlang
-{type,64,map,
-      [{type,65,map_field_assoc,[{type,65,integer,[]},{type,65,any,[]}]}]}
+{type,51,'fun',[]}
 ```
-
-## `tuple()`
-
+</td><td>any function</td></tr>
+<tr><td>
 ```Erlang
-{type,68,tuple,any}
+fun((...) -> integer())
 ```
-
-## `{}`
-
+</td><td>
 ```Erlang
-{type,69,tuple,[]}
+{type,53,'fun',[{type,53,any},{type,53,integer,[]}]}
 ```
-
-## `{atom()}`
-
+</td><td>any arity, returning Type</td></tr>
+<tr><td>
 ```Erlang
-{type,70,tuple,[{type,70,atom,[]}]}
+fun(() -> integer())
 ```
-
-## `{atom(), integer()}`
-
+</td><td>
 ```Erlang
-{type,71,tuple,[{type,71,atom,[]},{type,71,integer,[]}]}
+{type,54,'fun',[{type,54,product,[]},{type,54,integer,[]}]}
 ```
-
-## `atom() | integer()`
-
+</td><td></td></tr>
+<tr><td>
 ```Erlang
-{type,74,union,[{type,74,atom,[]},{type,74,integer,[]}]}
+fun((atom(), atom()) -> integer())
 ```
-
-For convenience, the following types are also built-in. They can be thought as predefined aliases for the type unions shown in the code comments.
-
-## `term()`
-
+</td><td>
 ```Erlang
-{type,88,term,[]} %% term() :: any()
+{type,55,'fun',
+      [{type,55,product,[{type,55,atom,[]},{type,55,atom,[]}]},
+       {type,55,integer,[]}]}
 ```
-
-## `binary()`
-
+</td><td></td></tr>
+<tr><td>
 ```Erlang
-{type,90,binary,[]} %% binary() :: <<_:_*8>>
+integer()
 ```
-
-## `bitstring()`
-
+</td><td>
 ```Erlang
-{type,92,bitstring,[]} %% bitstring() :: <<_:_*1>>
+{type,58,integer,[]}
 ```
-
-## `boolean()`
-
+</td><td></td></tr>
+<tr><td>
 ```Erlang
-{type,94,boolean,[]} %% boolean() :: 'false' | 'true'
+42
 ```
-
-## `byte()`
-
+</td><td>
 ```Erlang
-{type,96,byte,[]} %% byte() :: 0..255
+{integer,60,42}
 ```
-
-## `char()`
-
+</td><td>..., -1, 0, 1, ... 42 ...</td></tr>
+<tr><td>
 ```Erlang
-{type,98,char,[]} %% char() :: 0..16#10ffff
+1..10
 ```
-
-## `[]`
-
+</td><td>
 ```Erlang
-{type,100,nil,[]} %% nil() :: []
+{type,62,range,[{integer,62,1},{integer,62,10}]}
 ```
-
-## `number()`
-
+</td><td>specifies an integer range</td></tr>
+<tr><td>
 ```Erlang
-{type,102,number,[]} %% number() :: integer() | float()
+[integer()]
 ```
-
-## `list()`
-
+</td><td>
 ```Erlang
-{type,104,list,[]} %% list() :: [any()]
+{type,66,list,[{type,66,integer,[]}]}
 ```
-
-## `maybe_improper_list()`
-
+</td><td>Proper list ([]-terminated)</td></tr>
+<tr><td>
 ```Erlang
-{type,106,maybe_improper_list,[]} %% maybe_improper_list() :: maybe_improper_list(any(), any())
+maybe_improper_list(integer(), atom())
 ```
-
-## `nonempty_list()`
-
+</td><td>
 ```Erlang
-{type,108,nonempty_list,[]} %% nonempty_list() :: nonempty_list(any())
+{type,68,maybe_improper_list,[{type,68,integer,[]},{type,68,atom,[]}]}
 ```
-
-## `string()`
-
+</td><td>Type1=contents, Type2=termination</td></tr>
+<tr><td>
 ```Erlang
-{type,110,string,[]} %% string() :: [char()]
+nonempty_improper_list(integer(), atom())
 ```
-
-## `nonempty_string()`
-
+</td><td>
 ```Erlang
-{type,112,nonempty_string,[]} %% nonempty_string() :: [char(),...]
+{type,70,nonempty_improper_list,[{type,70,integer,[]},{type,70,atom,[]}]}
 ```
-
-## `iodata()`
-
+</td><td>Type1 and Type2 as above</td></tr>
+<tr><td>
 ```Erlang
-{type,114,iodata,[]} %% iodata() :: iolist() | binary()
+[integer(), ...]
 ```
-
-## `iolist()`
-
+</td><td>
 ```Erlang
-{type,116,iolist,[]} %% iolist() :: maybe_improper_list(byte() | binary() | iolist(), binary() | [])
+{type,72,nonempty_list,[{type,72,integer,[]}]}
 ```
-
-## `function()`
-
+</td><td>Proper non-empty list</td></tr>
+<tr><td>
 ```Erlang
-{type,118,function,[]} %% function() :: fun()
+map()
 ```
-
-## `module()`
-
+</td><td>
 ```Erlang
-{type,120,module,[]} %% module() :: atom()
+{type,76,map,any}
 ```
-
-## `mfa()`
-
+</td><td>denotes a map of any size</td></tr>
+<tr><td>
 ```Erlang
-{type,122,mfa,[]} %% mfa() :: {module(),atom(),arity()}
+#{}
 ```
-
-## `arity()`
-
+</td><td>
 ```Erlang
-{type,124,arity,[]} %% arity() :: 0..255
+{type,78,map,[]}
 ```
-
-## `identifier()`
-
+</td><td>denotes the empty map</td></tr>
+<tr><td>
 ```Erlang
-{type,126,identifier,[]} %% identifier() :: pid() | port() | reference()
+#{integer() => any()}
 ```
-
-## `node()`
-
+</td><td>
 ```Erlang
-{type,128,node,[]} %% node() :: atom()
+{type,79,map,
+      [{type,80,map_field_assoc,[{type,80,integer,[]},{type,80,any,[]}]}]}
 ```
-
-## `timeout()`
-
+</td><td></td></tr>
+<tr><td>
 ```Erlang
-{type,130,timeout,[]} %% timeout() :: 'infinity' | non_neg_integer()
+tuple()
 ```
-
-## `no_return()`
-
+</td><td>
 ```Erlang
-{type,132,no_return,[]} %% no_return() :: none()
+{type,83,tuple,any}
 ```
+</td><td></td></tr>
+<tr><td>
+```Erlang
+{}
+```
+</td><td>
+```Erlang
+{type,84,tuple,[]}
+```
+</td><td></td></tr>
+<tr><td>
+```Erlang
+{atom()}
+```
+</td><td>
+```Erlang
+{type,85,tuple,[{type,85,atom,[]}]}
+```
+</td><td></td></tr>
+<tr><td>
+```Erlang
+{atom(), integer()}
+```
+</td><td>
+```Erlang
+{type,86,tuple,[{type,86,atom,[]},{type,86,integer,[]}]}
+```
+</td><td></td></tr>
+<tr><td>
+```Erlang
+atom() | integer()
+```
+</td><td>
+```Erlang
+{type,89,union,[{type,89,atom,[]},{type,89,integer,[]}]}
+```
+</td><td></td></tr>
+</table>
+
+For convenience, the following types are also built-in. They can be
+thought as predefined aliases for the type unions shown in the code
+comments.
+
+<table>
+<tr><td>
+```Erlang
+term()
+```
+</td><td>
+```Erlang
+{type,104,term,[]}
+```
+</td><td>term() :: any()</td></tr>
+<tr><td>
+```Erlang
+binary()
+```
+</td><td>
+```Erlang
+{type,106,binary,[]}
+```
+</td><td>binary() :: <<_:_*8>></td></tr>
+<tr><td>
+```Erlang
+bitstring()
+```
+</td><td>
+```Erlang
+{type,108,bitstring,[]}
+```
+</td><td>bitstring() :: <<_:_*1>></td></tr>
+<tr><td>
+```Erlang
+boolean()
+```
+</td><td>
+```Erlang
+{type,110,boolean,[]}
+```
+</td><td>boolean() :: 'false' | 'true'</td></tr>
+<tr><td>
+```Erlang
+byte()
+```
+</td><td>
+```Erlang
+{type,112,byte,[]}
+```
+</td><td>byte() :: 0..255</td></tr>
+<tr><td>
+```Erlang
+char()
+```
+</td><td>
+```Erlang
+{type,114,char,[]}
+```
+</td><td>char() :: 0..16#10ffff</td></tr>
+<tr><td>
+```Erlang
+[]
+```
+</td><td>
+```Erlang
+{type,116,nil,[]}
+```
+</td><td>nil() :: []</td></tr>
+<tr><td>
+```Erlang
+number()
+```
+</td><td>
+```Erlang
+{type,118,number,[]}
+```
+</td><td>number() :: integer() | float()</td></tr>
+<tr><td>
+```Erlang
+list()
+```
+</td><td>
+```Erlang
+{type,120,list,[]}
+```
+</td><td>list() :: [any()]</td></tr>
+<tr><td>
+```Erlang
+maybe_improper_list()
+```
+</td><td>
+```Erlang
+{type,122,maybe_improper_list,[]}
+```
+</td><td>maybe_improper_list() :: maybe_improper_list(any(), any())</td></tr>
+<tr><td>
+```Erlang
+nonempty_list()
+```
+</td><td>
+```Erlang
+{type,124,nonempty_list,[]}
+```
+</td><td>nonempty_list() :: nonempty_list(any())</td></tr>
+<tr><td>
+```Erlang
+string()
+```
+</td><td>
+```Erlang
+{type,126,string,[]}
+```
+</td><td>string() :: [char()]</td></tr>
+<tr><td>
+```Erlang
+nonempty_string()
+```
+</td><td>
+```Erlang
+{type,128,nonempty_string,[]}
+```
+</td><td>nonempty_string() :: [char(),...]</td></tr>
+<tr><td>
+```Erlang
+iodata()
+```
+</td><td>
+```Erlang
+{type,130,iodata,[]}
+```
+</td><td>iodata() :: iolist() | binary()</td></tr>
+<tr><td>
+```Erlang
+iolist()
+```
+</td><td>
+```Erlang
+{type,132,iolist,[]}
+```
+</td><td>iolist() :: maybe_improper_list(byte() | binary() | iolist(), binary() | [])</td></tr>
+<tr><td>
+```Erlang
+function()
+```
+</td><td>
+```Erlang
+{type,134,function,[]}
+```
+</td><td>function() :: fun()</td></tr>
+<tr><td>
+```Erlang
+module()
+```
+</td><td>
+```Erlang
+{type,136,module,[]}
+```
+</td><td>module() :: atom()</td></tr>
+<tr><td>
+```Erlang
+mfa()
+```
+</td><td>
+```Erlang
+{type,138,mfa,[]}
+```
+</td><td>mfa() :: {module(),atom(),arity()}</td></tr>
+<tr><td>
+```Erlang
+arity()
+```
+</td><td>
+```Erlang
+{type,140,arity,[]}
+```
+</td><td>arity() :: 0..255</td></tr>
+<tr><td>
+```Erlang
+identifier()
+```
+</td><td>
+```Erlang
+{type,142,identifier,[]}
+```
+</td><td>identifier() :: pid() | port() | reference()</td></tr>
+<tr><td>
+```Erlang
+node()
+```
+</td><td>
+```Erlang
+{type,144,node,[]}
+```
+</td><td>node() :: atom()</td></tr>
+<tr><td>
+```Erlang
+timeout()
+```
+</td><td>
+```Erlang
+{type,146,timeout,[]}
+```
+</td><td>timeout() :: 'infinity' | non_neg_integer()</td></tr>
+<tr><td>
+```Erlang
+no_return()
+```
+</td><td>
+```Erlang
+{type,148,no_return,[]}
+```
+</td><td>no_return() :: none()</td></tr>
+</table>
 
 Built-in types; can be thought defined by the syntax...
 
-## `non_neg_integer()`
-
+<table>
+<tr><td>
 ```Erlang
-{type,138,non_neg_integer,[]} %% non_neg_integer() :: 0..
+non_neg_integer()
 ```
-
-## `pos_integer()`
-
+</td><td>
 ```Erlang
-{type,140,pos_integer,[]} %% pos_integer() :: 1..
+{type,154,non_neg_integer,[]}
 ```
-
-## `neg_integer()`
-
+</td><td>non_neg_integer() :: 0..</td></tr>
+<tr><td>
 ```Erlang
-{type,142,neg_integer,[]} %% neg_integer() :: ..-1
+pos_integer()
 ```
+</td><td>
+```Erlang
+{type,156,pos_integer,[]}
+```
+</td><td>pos_integer() :: 1..</td></tr>
+<tr><td>
+```Erlang
+neg_integer()
+```
+</td><td>
+```Erlang
+{type,158,neg_integer,[]}
+```
+</td><td>neg_integer() :: ..-1</td></tr>
+</table>
 
 Record declarations
 -------------------
 
-A record is represented as a form without types. If any fields are typed, the form is followed by a 'record type' form. Thus, for records with typed fields, there are two consecutive forms.
 
-## `-record(myrec,{field1 = foo,field2,field3 = foo,field4}).
-`
-
+<table>
+<tr><td>
 ```Erlang
-{attribute,150,record,
-           {myrec,[{record_field,150,{atom,150,field1},{atom,150,foo}},
-                   {record_field,151,{atom,151,field2}},
-                   {record_field,152,{atom,152,field3},{atom,152,foo}},
-                   {record_field,153,{atom,153,field4}}]}}
-```
+-record(myrec,{field1 = foo,field2,field3 = foo,field4}).
 
-## `-record(myrec,{field1 = foo :: atom(),
+```
+</td><td>
+```Erlang
+{attribute,168,record,
+           {myrec,[{record_field,168,{atom,168,field1},{atom,168,foo}},
+                   {record_field,169,{atom,169,field2}},
+                   {record_field,170,{atom,170,field3},{atom,170,foo}},
+                   {record_field,171,{atom,171,field4}}]}}
+```
+</td><td>A record is represented as a form without types. If any fields are typed,
+the form is followed by a 'record type' form. Thus, for records with typed
+fields, there are two consecutive forms.</td></tr>
+<tr><td>
+```Erlang
+-record(myrec,{field1 = foo :: atom(),
                field2 :: undefined,
                field3 = foo,
-               field4}).`
-
+               field4}).
+```
+</td><td>
 ```Erlang
-{attribute,150,type,
+{attribute,168,type,
     {{record,myrec},
      [{typed_record_field,
-          {record_field,150,{atom,150,field1},{atom,150,foo}},
-          {type,150,atom,[]}},
+          {record_field,168,{atom,168,field1},{atom,168,foo}},
+          {type,168,atom,[]}},
       {typed_record_field,
-          {record_field,151,{atom,151,field2}},
-          {atom,151,undefined}},
-      {record_field,152,{atom,152,field3},{atom,152,foo}},
-      {record_field,153,{atom,153,field4}}],
+          {record_field,169,{atom,169,field2}},
+          {atom,169,undefined}},
+      {record_field,170,{atom,170,field3},{atom,170,foo}},
+      {record_field,171,{atom,171,field4}}],
      []}}
 ```
-
+</td><td></td></tr>
+</table>
