@@ -5,35 +5,27 @@
 main([]) ->
     {ok, Forms} = epp:parse_file("corpus.erl", []),
     {ok, F} = file:open("README.md", [write]),
-    try doc_forms(F, Forms, false)
+    try doc_forms(F, Forms)
     after file:close(F)
     end.
 
-doc_forms(F, [{attribute, _, comment, Comment}, Form | Forms], InTable) ->
+doc_forms(F, [{attribute, _, comment, Comment}, Form | Forms]) ->
     %% A comment followed by another form.
-    InTable orelse io:format(F, "<table>~n", []),
     doc_form(F, Form, Comment),
-    doc_forms(F, Forms, true);
-doc_forms(F, [Form | Forms], InTable) ->
-    InTableAfter =
-        case Form of
-            {attribute, _, doc, Doc} ->
-                InTable andalso io:format(F, "</table>~n~n", []),
-                io:format(F, "~s~n~n", [Doc]),
-                false;
-            {attribute, _, file, _M} ->
-                InTable;
-            {eof, _} ->
-                InTable;
-            _ ->
-                InTable orelse io:format(F, "<table>~n", []),
-                doc_form(F, Form, ""),
-                true
-        end,
-    doc_forms(F, Forms, InTableAfter);
-doc_forms(F, [], true) ->
-    io:format(F, "</table>~n", []);
-doc_forms(_F, [], false) ->
+    doc_forms(F, Forms);
+doc_forms(F, [Form | Forms]) ->
+    case Form of
+        {attribute, _, doc, Doc} ->
+            io:format(F, "~s~n~n", [Doc]);
+        {attribute, _, file, _M} ->
+            ok;
+        {eof, _} ->
+            ok;
+        _ ->
+            doc_form(F, Form, "")
+    end,
+    doc_forms(F, Forms);
+doc_forms(_F, []) ->
     ok.
 
 doc_form(F, Form, Comment) ->
@@ -63,13 +55,10 @@ doc_form(F, Form, Comment) ->
                 io:format("Unexpected form: ~s~p~n~n", [Src,Form]),
                 {Src, Form}
         end,
-    ok = io:format(F, "<tr>"
-                      "<td><div class=\"highlight highlight-source-erlang\">"
-                      "<pre>~n~s~n</pre></div></td>~n"
-                      "<td><div class=\"highlight highlight-source-erlang\">"
-                      "<pre>~n~p~n</pre></div></td>~n"
-                      "<td>~s</td></tr>~n",
-                   [PP, Abs, Comment]).
+    Comment1 = case Comment of "" -> ""; _ -> [" (", Comment, ")"] end,
+    ok = io:format(F, "**`~s`**~s~n~n"
+                      "```Erlang~n~p~n```~n~n",
+                   [PP, Comment1, Abs]).
 
 pp_type(T) ->
     pp_type_from_attribute({attribute, 0, type, {t, T, []}}).
