@@ -1,3 +1,4 @@
+%% encoding: utf-8
 %% This file is used for generating the documentation. It contains
 %% erlang code with corresponding descriptions.
 
@@ -15,11 +16,46 @@
 "which is parsed to generate the abstract form, and pretty-printed again to\n"
 "generate the Erlang code examples.\n"
 "\n"
-"For a complete insight, see the files corpus.erl and generate_docs.escript\n"
-"\n"
 "Every form is a tuple. The second element is the line number in the source\n"
 "file.\n"
 "\n"
+"Preprocess directives such as -define, -include and -ifdef are currently\n"
+"not included because `epp:parse_file/2` is used for parsing the file, which\n"
+"consumes the preprocessor directives.".
+
+-doc
+"Top-level forms\n"
+"---------------\n".
+
+-file("corpus.erl", 30).
+-module(corpus).
+-compile(export_all).
+-vsn("1.2.3").
+-on_load(my_function/0).
+-behaviour(gen_server).
+-export([my_function/0]).
+-export_type([my_type/0]).
+-import(lists, [foldl/3]).
+-error(my_error).
+-warning(my_warning).
+-type my_type() :: a | b.
+-type my_opaque() :: a | b.
+-callback my_function() -> ok.
+-spec my_function() -> ok.
+my_function() -> ok.
+my_function(X) when X > 2 -> X + 1.
+
+-doc
+"Record declarations: "
+"A record is represented as a form without types. If any fields are typed,\n"
+"the form is followed by a 'record type' form. Thus, for records with typed\n"
+"fields, there are two consecutive forms.".
+-record(myrec, {field1 = foo :: atom(),
+                field2       :: undefined,
+                field3 = foo,
+                field4}).
+
+-doc
 "Types\n"
 "-----\n"
 "\n"
@@ -158,14 +194,52 @@
 -type t() :: neg_integer().
 
 -doc
-"Record declarations\n"
-"-------------------\n".
+"Exressions\n"
+"----------\n".
 
--comment
-"A record is represented as a form without types. If any fields are typed,\n"
-"the form is followed by a 'record type' form. Thus, for records with typed\n"
-"fields, there are two consecutive forms.".
--record(myrec, {field1 = foo :: atom(),
-                field2       :: undefined,
-                field3 = foo,
-                field4}).
+%% Terms
+f() -> 42.
+f() -> 3.141592653589.
+f() -> ok.
+f() -> [].
+f() -> [x,y].
+f() -> [x | XS].
+f() -> "abc".
+f() -> <<"abc">>.
+f() -> <<A:8/integer, B:32/float-little, C/binary>>.
+f() -> <<"abc"/utf8, XYZ/utf16>>.
+f() -> #{answer => 42}.
+f() -> {x, y}.
+f() -> fun f/1.
+f() -> fun m:f/1.
+
+%% Variables
+f() -> X.
+f() -> _.
+
+%% Operators
+f() -> not true.
+f() -> 1 + 1.
+f() -> 1 == 1.
+f() -> X and Y.
+f() -> X andalso Y.
+
+%% Function call and pattern matching
+f() -> f(42).
+f() -> m:f(42).
+f() -> X = 42.
+f() -> fun (42) -> true; (_) -> false end.
+f() -> fun (X) when is_atom(X) -> X end.
+f() -> if P -> hello; true -> ok end.
+f() -> case foo of bar -> baz; _ -> ok end.
+f() -> begin ok, ok end.
+f() -> Pid ! message.
+f() -> receive X -> X after 1000 -> timeout end.
+f() -> try f(42) catch error:_E -> failed after cleanup() end.
+f() -> catch X.
+
+%% List comprehensions
+f() -> [2 || is_integer(2)].
+f() -> [X || X <- XS, is_atom(X)].
+f() -> << <<X:4>> || <<X:4>> <= Bin, X /= 0 >>.
+
