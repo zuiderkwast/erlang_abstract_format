@@ -204,6 +204,7 @@ f() -> ok.
 f() -> [].
 f() -> [x,y].
 f() -> [x | XS].
+f() -> "".
 f() -> "abc".
 f() -> <<"abc">>.
 f() -> <<A:8/integer, B:32/float-little, C/binary>>.
@@ -235,7 +236,8 @@ f() -> case foo of bar -> baz; _ -> ok end.
 f() -> begin ok, ok end.
 f() -> Pid ! message.
 f() -> receive X -> X after 1000 -> timeout end.
-f() -> try f(42) catch error:_E -> failed after cleanup() end.
+f() -> try f() catch error:_E -> fail end.
+f() -> try f() of X -> X catch _:_ -> fail after cleanup() end.
 f() -> catch X.
 
 %% List comprehensions

@@ -5,6 +5,10 @@
 main([]) ->
     {ok, [{attribute,_,file,_} | Forms]} = epp:parse_file("corpus.erl", []),
     {ok, F} = file:open("README.md", [write]),
+    {ok, TypeRE} = re:compile(<<"::\\s*(.*)\\.\\n*">>),
+    put(typeRE, TypeRE),
+    {ok, WhitespaceRE} = re:compile(<<"\\s+">>),
+    put(whitespaceRE, WhitespaceRE),
     try doc_forms(F, Forms)
     after file:close(F)
     end.
@@ -31,7 +35,6 @@ doc_forms(_F, []) ->
     ok.
 
 doc_form(F, Form, Comment) ->
-    {ok, TypeRE} = re:compile(<<"::\\s*(.*)\\.\\n*">>),
     {PP, Abs} =
         case Form of
             {attribute, _, record, _} ->
@@ -48,8 +51,8 @@ doc_form(F, Form, Comment) ->
                 {Src, Form};
             {attribute, _, type, {t, T, []}} ->
                 %% Type, wrapped in a type definition for type 't'.
-                TypeDef  = erl_pp:form(Form),
-                {match, [Src]} = re:run(TypeDef, TypeRE,
+                TypeDef = erl_pp:form(Form),
+                {match, [Src]} = re:run(TypeDef, get(typeRE),
                                         [{capture, all_but_first, binary}]),
                 {Src, T};
             {function, _, f, 0, [{clause, _, [], [], [Expr]}]} ->
@@ -61,9 +64,10 @@ doc_form(F, Form, Comment) ->
                 {string:strip(lists:flatten(Src), right, $\n), Form}
         end,
     Comment1 = case Comment of "" -> ""; _ -> [" (", Comment, ")"] end,
+    PP1 = re:replace(PP, get(whitespaceRE), " ", [global]),
     ok = io:format(F, "**`~s`**~s~n~n"
                       "```Erlang~n~p~n```~n~n",
-                   [PP, Comment1, Abs]).
+                   [PP1, Comment1, Abs]).
 
 pp_type(T) ->
     pp_type_from_attribute({attribute, 0, type, {t, T, []}}).
