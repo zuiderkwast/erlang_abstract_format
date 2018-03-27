@@ -235,9 +235,10 @@ f() -> if P -> hello; true -> ok end.
 f() -> case foo of bar -> baz; _ -> ok end.
 f() -> begin ok, ok end.
 f() -> Pid ! message.
-f() -> receive X -> X after 1000 -> timeout end.
-f() -> try f() catch error:_E -> fail end.
-f() -> try f() of X -> X catch _:_ -> fail after cleanup() end.
+f() -> receive X -> ok end.
+f() -> receive X -> ok after 1000 -> timeout end.
+f() -> try f() catch error:E -> fail end.
+f() -> try f() of X when is_integer(X) -> X catch C:E when is_tuple(E) -> fail after afterwards() end.
 f() -> catch X.
 
 %% List comprehensions
