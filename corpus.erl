@@ -124,7 +124,8 @@ my_function(X) when X > 2 -> X + 1.
 %% Union
 -type t() :: atom() | integer().
 
-%% Remote
+%% User-def and remote
+-type t() :: my_type().
 -type t() :: module:type().
 
 %% ----------------
