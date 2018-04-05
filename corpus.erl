@@ -215,6 +215,8 @@ f() -> <<A:8/integer, B:32/float-little, C/binary>>.
 f() -> <<"abc"/utf8, XYZ/utf16>>.
 f() -> #{answer => 42}.
 f() -> {x, y}.
+f() -> #my_record{foo = X}.
+f() -> Rec#my_record.foo.
 f() -> fun f/1.
 f() -> fun m:f/1.
 
