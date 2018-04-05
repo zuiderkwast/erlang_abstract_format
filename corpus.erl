@@ -39,7 +39,8 @@
 -error(my_error).
 -warning(my_warning).
 -type my_type() :: a | b.
--type my_opaque() :: a | b.
+-opaque my_opaque() :: a | b.
+-type maybe(A) :: {just, A} | nothing.
 -callback my_function() -> ok.
 -spec my_function() -> ok.
 my_function() -> ok.
@@ -121,11 +122,15 @@ my_function(X) when X > 2 -> X + 1.
 -type t() :: {atom()}.
 -type t() :: {atom(), integer()}.
 
+%% Record
+-type t() :: #my_record{}.
+
 %% Union
 -type t() :: atom() | integer().
 
 %% User-def and remote
 -type t() :: my_type().
+-type t() :: maybe(integer()).
 -type t() :: module:type().
 
 %% ----------------
