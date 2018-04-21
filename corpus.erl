@@ -115,7 +115,7 @@ my_function(X) when X > 2 -> X + 1.
 -type t() :: map().
 -comment "denotes the empty map".
 -type t() :: #{}.
--type t() :: #{%atom() := integer(),         %% denotes a mandatory association
+-type t() :: #{size      := integer(),      %% denotes a mandatory association
                integer() => any()}.         %% denotes an optional association
 
 %% Tuple
@@ -220,7 +220,7 @@ f() -> "abc".
 f() -> <<"abc">>.
 f() -> <<A:8/integer, B:32/float-little, C/binary>>.
 f() -> <<"abc"/utf8, XYZ/utf16>>.
-f() -> #{answer => 42}.
+f() -> #{old_key := updated_value, new_key => 42}.
 f() -> {x, y}.
 f() -> #my_record{foo = X}.
 f() -> Rec#my_record.foo.

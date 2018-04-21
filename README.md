@@ -333,11 +333,12 @@ Abstract form syntax for types: `{type, Line, TypeName, TypeParams}`.
 {type,117,map,[]}
 ```
 
-**`#{integer() => any()}`**
+**`#{size := integer(), integer() => any()}`**
 
 ```Erlang
 {type,118,map,
-      [{type,119,map_field_assoc,[{type,119,integer,[]},{type,119,any,[]}]}]}
+      [{type,118,map_field_exact,[{atom,118,size},{type,118,integer,[]}]},
+       {type,119,map_field_assoc,[{type,119,integer,[]},{type,119,any,[]}]}]}
 ```
 
 **`tuple()`**
@@ -631,10 +632,12 @@ Exressions
       {bin_element,222,{var,222,'XYZ'},default,[utf16]}]}
 ```
 
-**`#{answer => 42}`**
+**`#{old_key := updated_value,new_key => 42}`**
 
 ```Erlang
-{map,223,[{map_field_assoc,223,{atom,223,answer},{integer,223,42}}]}
+{map,223,
+     [{map_field_exact,223,{atom,223,old_key},{atom,223,updated_value}},
+      {map_field_assoc,223,{atom,223,new_key},{integer,223,42}}]}
 ```
 
 **`{x,y}`**
