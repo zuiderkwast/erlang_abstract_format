@@ -23,6 +23,12 @@ doc_forms(F, [Form | Forms]) ->
             io:format(F, "~s~n~n", [Doc]);
         {attribute, _, file, M} when is_atom(M) ->
             ok;
+        {Tag, {L, epp, {Tag, Err}}} when Tag == error; Tag == warning ->
+            Comment = io_lib:format("`~p` before OTP 19",
+                                    [{attribute, L, Tag, Err}]),
+            doc_form(F, Form, Comment);
+        {error, {_, epp, {include, _FileOrLib, "include" ++ _}}} ->
+            doc_form(F, Form, "");
         {error, E} ->
             io:format("Error: ~p~n", [E]);
         {eof, _} ->
@@ -55,6 +61,14 @@ doc_form(F, Form, Comment) ->
                 {match, [Src]} = re:run(TypeDef, get(typeRE),
                                         [{capture, all_but_first, binary}]),
                 {Src, T};
+            {warning, {_, epp, {warning, W}}} ->
+                {io_lib:format("-warning(~p).", [W]), Form};
+            {error, {_, epp, {error, E}}} ->
+                {io_lib:format("-error(~p).", [E]), Form};
+            {error, {_, epp, {include, file, File}}} ->
+                {io_lib:format("-include(~p).", [File]), Form};
+            {error, {_, epp, {include, lib, File}}} ->
+                {io_lib:format("-include_lib(~p).", [File]), Form};
             {function, _, f, 0, [{clause, _, [], [], [Expr]}]} ->
                 %% Expression, wrapped in f() -> Expr.
                 {erl_pp:expr(Expr), Expr};

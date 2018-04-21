@@ -38,6 +38,8 @@
 -import(lists, [foldl/3]).
 -error(my_error).
 -warning(my_warning).
+-include("include_not_found.hrl").
+-include_lib("include_lib/not_found.hrl").
 -type my_type() :: a | b.
 -opaque my_opaque() :: a | b.
 -type maybe(A) :: {just, A} | nothing.
@@ -249,7 +251,7 @@ f() -> Pid ! message.
 f() -> receive X -> ok end.
 f() -> receive X -> ok after 1000 -> timeout end.
 f() -> try f() catch error:E -> fail end.
-f() -> try f() of X when is_integer(X) -> X catch C:E when is_tuple(E) -> fail after afterwards() end.
+f() -> try f(),g() of X when is_integer(X) -> X catch C:E when is_tuple(E) -> fail after afterwards() end.
 f() -> catch X.
 
 %% List comprehensions
