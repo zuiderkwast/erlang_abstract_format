@@ -138,20 +138,35 @@ Top-level forms
             [{type,47,'fun',[{type,47,product,[]},{atom,47,ok}]}]}}
 ```
 
+**`-spec my_function(A :: atom()) -> B when B :: boolean().`**
+
+```Erlang
+{attribute,48,spec,
+    {{my_function,1},
+     [{type,48,bounded_fun,
+          [{type,48,'fun',
+               [{type,48,product,
+                    [{ann_type,48,[{var,48,'A'},{type,48,atom,[]}]}]},
+                {var,48,'B'}]},
+           [{type,48,constraint,
+                [{atom,48,is_subtype},
+                 [{var,48,'B'},{type,48,boolean,[]}]]}]]}]}}
+```
+
 **`my_function() -> ok.`**
 
 ```Erlang
-{function,48,my_function,0,[{clause,48,[],[],[{atom,48,ok}]}]}
+{function,49,my_function,0,[{clause,49,[],[],[{atom,49,ok}]}]}
 ```
 
 **`my_function(X) when X > 2 -> X + 1.`**
 
 ```Erlang
-{function,49,my_function,1,
-          [{clause,49,
-                   [{var,49,'X'}],
-                   [[{op,49,'>',{var,49,'X'},{integer,49,2}}]],
-                   [{op,49,'+',{var,49,'X'},{integer,49,1}}]}]}
+{function,50,my_function,1,
+          [{clause,50,
+                   [{var,50,'X'}],
+                   [[{op,50,'>',{var,50,'X'},{integer,50,2}}]],
+                   [{op,50,'+',{var,50,'X'},{integer,50,1}}]}]}
 ```
 
 Record declarations: A record is represented as a form without types. If any fields are typed,
@@ -161,16 +176,16 @@ fields, there are two consecutive forms.
 **`-record(myrec,{field1 = foo :: atom(), field2 :: undefined, field3 = foo, field4}). `**
 
 ```Erlang
-{attribute,56,record,
+{attribute,61,record,
     {myrec,
         [{typed_record_field,
-             {record_field,56,{atom,56,field1},{atom,56,foo}},
-             {type,56,atom,[]}},
+             {record_field,61,{atom,61,field1},{atom,61,foo}},
+             {type,61,atom,[]}},
          {typed_record_field,
-             {record_field,57,{atom,57,field2}},
-             {atom,57,undefined}},
-         {record_field,58,{atom,58,field3},{atom,58,foo}},
-         {record_field,59,{atom,59,field4}}]}}
+             {record_field,62,{atom,62,field2}},
+             {atom,62,undefined}},
+         {record_field,63,{atom,63,field3},{atom,63,foo}},
+         {record_field,64,{atom,64,field4}}]}}
 ```
 
 Types
@@ -184,215 +199,215 @@ Abstract form syntax for types: `{type, Line, TypeName, TypeParams}`.
 **`any()`**
 
 ```Erlang
-{type,70,any,[]}
+{type,75,any,[]}
 ```
 
 **`none()`**
 
 ```Erlang
-{type,71,none,[]}
+{type,76,none,[]}
 ```
 
 **`pid()`**
 
 ```Erlang
-{type,72,pid,[]}
+{type,77,pid,[]}
 ```
 
 **`port()`**
 
 ```Erlang
-{type,73,port,[]}
+{type,78,port,[]}
 ```
 
 **`reference()`**
 
 ```Erlang
-{type,74,reference,[]}
+{type,79,reference,[]}
 ```
 
 **`[]`**
 
 ```Erlang
-{type,75,nil,[]}
+{type,80,nil,[]}
 ```
 
 **`atom()`**
 
 ```Erlang
-{type,76,atom,[]}
+{type,81,atom,[]}
 ```
 
 **`<<>>`**
 
 ```Erlang
-{type,79,binary,[{integer,79,0},{integer,79,0}]}
+{type,84,binary,[{integer,84,0},{integer,84,0}]}
 ```
 
 **`<<_:M>>`** (M is a positive integer)
 
 ```Erlang
-{type,81,binary,[{var,81,'M'},{integer,81,0}]}
+{type,86,binary,[{var,86,'M'},{integer,86,0}]}
 ```
 
 **`<<_:_*N>>`** (N is a positive integer)
 
 ```Erlang
-{type,83,binary,[{integer,83,0},{var,83,'N'}]}
+{type,88,binary,[{integer,88,0},{var,88,'N'}]}
 ```
 
 **`<<_:M, _:_*N>>`**
 
 ```Erlang
-{type,84,binary,[{var,84,'M'},{var,84,'N'}]}
+{type,89,binary,[{var,89,'M'},{var,89,'N'}]}
 ```
 
 **`float()`**
 
 ```Erlang
-{type,86,float,[]}
+{type,91,float,[]}
 ```
 
 **`fun()`** (any function)
 
 ```Erlang
-{type,90,'fun',[]}
+{type,95,'fun',[]}
 ```
 
 **`fun((...) -> integer())`** (any arity, returning Type)
 
 ```Erlang
-{type,92,'fun',[{type,92,any},{type,92,integer,[]}]}
+{type,97,'fun',[{type,97,any},{type,97,integer,[]}]}
 ```
 
 **`fun(() -> integer())`**
 
 ```Erlang
-{type,93,'fun',[{type,93,product,[]},{type,93,integer,[]}]}
+{type,98,'fun',[{type,98,product,[]},{type,98,integer,[]}]}
 ```
 
 **`fun((atom(), atom()) -> integer())`**
 
 ```Erlang
-{type,94,'fun',
-      [{type,94,product,[{type,94,atom,[]},{type,94,atom,[]}]},
-       {type,94,integer,[]}]}
+{type,99,'fun',
+      [{type,99,product,[{type,99,atom,[]},{type,99,atom,[]}]},
+       {type,99,integer,[]}]}
 ```
 
 **`integer()`**
 
 ```Erlang
-{type,97,integer,[]}
+{type,102,integer,[]}
 ```
 
 **`42`** (..., -1, 0, 1, ... 42 ...)
 
 ```Erlang
-{integer,99,42}
+{integer,104,42}
 ```
 
 **`1..10`** (specifies an integer range)
 
 ```Erlang
-{type,101,range,[{integer,101,1},{integer,101,10}]}
+{type,106,range,[{integer,106,1},{integer,106,10}]}
 ```
 
 **`[integer()]`** (Proper list ([]-terminated))
 
 ```Erlang
-{type,105,list,[{type,105,integer,[]}]}
+{type,110,list,[{type,110,integer,[]}]}
 ```
 
 **`maybe_improper_list(integer(), atom())`** (Type1=contents, Type2=termination)
 
 ```Erlang
-{type,107,maybe_improper_list,[{type,107,integer,[]},{type,107,atom,[]}]}
+{type,112,maybe_improper_list,[{type,112,integer,[]},{type,112,atom,[]}]}
 ```
 
 **`nonempty_improper_list(integer(), atom())`** (Type1 and Type2 as above)
 
 ```Erlang
-{type,109,nonempty_improper_list,[{type,109,integer,[]},{type,109,atom,[]}]}
+{type,114,nonempty_improper_list,[{type,114,integer,[]},{type,114,atom,[]}]}
 ```
 
 **`[integer(), ...]`** (Proper non-empty list)
 
 ```Erlang
-{type,111,nonempty_list,[{type,111,integer,[]}]}
+{type,116,nonempty_list,[{type,116,integer,[]}]}
 ```
 
 **`map()`** (denotes a map of any size)
 
 ```Erlang
-{type,115,map,any}
+{type,120,map,any}
 ```
 
 **`#{}`** (denotes the empty map)
 
 ```Erlang
-{type,117,map,[]}
+{type,122,map,[]}
 ```
 
 **`#{size := integer(), integer() => any()}`**
 
 ```Erlang
-{type,118,map,
-      [{type,118,map_field_exact,[{atom,118,size},{type,118,integer,[]}]},
-       {type,119,map_field_assoc,[{type,119,integer,[]},{type,119,any,[]}]}]}
+{type,123,map,
+      [{type,123,map_field_exact,[{atom,123,size},{type,123,integer,[]}]},
+       {type,124,map_field_assoc,[{type,124,integer,[]},{type,124,any,[]}]}]}
 ```
 
 **`tuple()`**
 
 ```Erlang
-{type,122,tuple,any}
+{type,127,tuple,any}
 ```
 
 **`{}`**
 
 ```Erlang
-{type,123,tuple,[]}
+{type,128,tuple,[]}
 ```
 
 **`{atom()}`**
 
 ```Erlang
-{type,124,tuple,[{type,124,atom,[]}]}
+{type,129,tuple,[{type,129,atom,[]}]}
 ```
 
 **`{atom(), integer()}`**
 
 ```Erlang
-{type,125,tuple,[{type,125,atom,[]},{type,125,integer,[]}]}
+{type,130,tuple,[{type,130,atom,[]},{type,130,integer,[]}]}
 ```
 
 **`#my_record{}`**
 
 ```Erlang
-{type,128,record,[{atom,128,my_record}]}
+{type,133,record,[{atom,133,my_record}]}
 ```
 
 **`atom() | integer()`**
 
 ```Erlang
-{type,131,union,[{type,131,atom,[]},{type,131,integer,[]}]}
+{type,136,union,[{type,136,atom,[]},{type,136,integer,[]}]}
 ```
 
 **`my_type()`**
 
 ```Erlang
-{user_type,134,my_type,[]}
+{user_type,139,my_type,[]}
 ```
 
 **`maybe(integer())`**
 
 ```Erlang
-{user_type,135,maybe,[{type,135,integer,[]}]}
+{user_type,140,maybe,[{type,140,integer,[]}]}
 ```
 
 **`module:type()`**
 
 ```Erlang
-{remote_type,136,[{atom,136,module},{atom,136,type},[]]}
+{remote_type,141,[{atom,141,module},{atom,141,type},[]]}
 ```
 
 For convenience, the following types are also built-in. They can be
@@ -402,139 +417,139 @@ comments.
 **`term()`** (term() :: any())
 
 ```Erlang
-{type,151,term,[]}
+{type,156,term,[]}
 ```
 
 **`binary()`** (binary() :: <<_:_*8>>)
 
 ```Erlang
-{type,153,binary,[]}
+{type,158,binary,[]}
 ```
 
 **`bitstring()`** (bitstring() :: <<_:_*1>>)
 
 ```Erlang
-{type,155,bitstring,[]}
+{type,160,bitstring,[]}
 ```
 
 **`boolean()`** (boolean() :: 'false' | 'true')
 
 ```Erlang
-{type,157,boolean,[]}
+{type,162,boolean,[]}
 ```
 
 **`byte()`** (byte() :: 0..255)
 
 ```Erlang
-{type,159,byte,[]}
+{type,164,byte,[]}
 ```
 
 **`char()`** (char() :: 0..16#10ffff)
 
 ```Erlang
-{type,161,char,[]}
+{type,166,char,[]}
 ```
 
 **`[]`** (nil() :: [])
 
 ```Erlang
-{type,163,nil,[]}
+{type,168,nil,[]}
 ```
 
 **`number()`** (number() :: integer() | float())
 
 ```Erlang
-{type,165,number,[]}
+{type,170,number,[]}
 ```
 
 **`list()`** (list() :: [any()])
 
 ```Erlang
-{type,167,list,[]}
+{type,172,list,[]}
 ```
 
 **`maybe_improper_list()`** (maybe_improper_list() :: maybe_improper_list(any(), any()))
 
 ```Erlang
-{type,169,maybe_improper_list,[]}
+{type,174,maybe_improper_list,[]}
 ```
 
 **`nonempty_list()`** (nonempty_list() :: nonempty_list(any()))
 
 ```Erlang
-{type,171,nonempty_list,[]}
+{type,176,nonempty_list,[]}
 ```
 
 **`string()`** (string() :: [char()])
 
 ```Erlang
-{type,173,string,[]}
+{type,178,string,[]}
 ```
 
 **`nonempty_string()`** (nonempty_string() :: [char(),...])
 
 ```Erlang
-{type,175,nonempty_string,[]}
+{type,180,nonempty_string,[]}
 ```
 
 **`iodata()`** (iodata() :: iolist() | binary())
 
 ```Erlang
-{type,177,iodata,[]}
+{type,182,iodata,[]}
 ```
 
 **`iolist()`** (iolist() :: maybe_improper_list(byte() | binary() | iolist(), binary() | []))
 
 ```Erlang
-{type,179,iolist,[]}
+{type,184,iolist,[]}
 ```
 
 **`function()`** (function() :: fun())
 
 ```Erlang
-{type,181,function,[]}
+{type,186,function,[]}
 ```
 
 **`module()`** (module() :: atom())
 
 ```Erlang
-{type,183,module,[]}
+{type,188,module,[]}
 ```
 
 **`mfa()`** (mfa() :: {module(),atom(),arity()})
 
 ```Erlang
-{type,185,mfa,[]}
+{type,190,mfa,[]}
 ```
 
 **`arity()`** (arity() :: 0..255)
 
 ```Erlang
-{type,187,arity,[]}
+{type,192,arity,[]}
 ```
 
 **`identifier()`** (identifier() :: pid() | port() | reference())
 
 ```Erlang
-{type,189,identifier,[]}
+{type,194,identifier,[]}
 ```
 
 **`node()`** (node() :: atom())
 
 ```Erlang
-{type,191,node,[]}
+{type,196,node,[]}
 ```
 
 **`timeout()`** (timeout() :: 'infinity' | non_neg_integer())
 
 ```Erlang
-{type,193,timeout,[]}
+{type,198,timeout,[]}
 ```
 
 **`no_return()`** (no_return() :: none())
 
 ```Erlang
-{type,195,no_return,[]}
+{type,200,no_return,[]}
 ```
 
 Built-in types; can be thought defined by the syntax...
@@ -542,19 +557,19 @@ Built-in types; can be thought defined by the syntax...
 **`non_neg_integer()`** (non_neg_integer() :: 0..)
 
 ```Erlang
-{type,201,non_neg_integer,[]}
+{type,206,non_neg_integer,[]}
 ```
 
 **`pos_integer()`** (pos_integer() :: 1..)
 
 ```Erlang
-{type,203,pos_integer,[]}
+{type,208,pos_integer,[]}
 ```
 
 **`neg_integer()`** (neg_integer() :: ..-1)
 
 ```Erlang
-{type,205,neg_integer,[]}
+{type,210,neg_integer,[]}
 ```
 
 Exressions
@@ -564,296 +579,296 @@ Exressions
 **`42`**
 
 ```Erlang
-{integer,212,42}
+{integer,217,42}
 ```
 
 **`3.141592653589`**
 
 ```Erlang
-{float,213,3.141592653589}
+{float,218,3.141592653589}
 ```
 
 **`ok`**
 
 ```Erlang
-{atom,214,ok}
+{atom,219,ok}
 ```
 
 **`[]`**
 
 ```Erlang
-{nil,215}
+{nil,220}
 ```
 
 **`[x,y]`**
 
 ```Erlang
-{cons,216,{atom,216,x},{cons,216,{atom,216,y},{nil,216}}}
+{cons,221,{atom,221,x},{cons,221,{atom,221,y},{nil,221}}}
 ```
 
 **`[x|XS]`**
 
 ```Erlang
-{cons,217,{atom,217,x},{var,217,'XS'}}
+{cons,222,{atom,222,x},{var,222,'XS'}}
 ```
 
 **`""`**
 
 ```Erlang
-{string,218,[]}
+{string,223,[]}
 ```
 
 **`"abc"`**
 
 ```Erlang
-{string,219,"abc"}
+{string,224,"abc"}
 ```
 
 **`<<"abc">>`**
 
 ```Erlang
-{bin,220,[{bin_element,220,{string,220,"abc"},default,default}]}
+{bin,225,[{bin_element,225,{string,225,"abc"},default,default}]}
 ```
 
 **`<<A:8/integer,B:32/float-little,C/binary>>`**
 
 ```Erlang
-{bin,221,
-     [{bin_element,221,{var,221,'A'},{integer,221,8},[integer]},
-      {bin_element,221,{var,221,'B'},{integer,221,32},[float,little]},
-      {bin_element,221,{var,221,'C'},default,[binary]}]}
+{bin,226,
+     [{bin_element,226,{var,226,'A'},{integer,226,8},[integer]},
+      {bin_element,226,{var,226,'B'},{integer,226,32},[float,little]},
+      {bin_element,226,{var,226,'C'},default,[binary]}]}
 ```
 
 **`<<"abc"/utf8,XYZ/utf16>>`**
 
 ```Erlang
-{bin,222,
-     [{bin_element,222,{string,222,"abc"},default,[utf8]},
-      {bin_element,222,{var,222,'XYZ'},default,[utf16]}]}
+{bin,227,
+     [{bin_element,227,{string,227,"abc"},default,[utf8]},
+      {bin_element,227,{var,227,'XYZ'},default,[utf16]}]}
 ```
 
 **`#{old_key := updated_value,new_key => 42}`**
 
 ```Erlang
-{map,223,
-     [{map_field_exact,223,{atom,223,old_key},{atom,223,updated_value}},
-      {map_field_assoc,223,{atom,223,new_key},{integer,223,42}}]}
+{map,228,
+     [{map_field_exact,228,{atom,228,old_key},{atom,228,updated_value}},
+      {map_field_assoc,228,{atom,228,new_key},{integer,228,42}}]}
 ```
 
 **`{x,y}`**
 
 ```Erlang
-{tuple,224,[{atom,224,x},{atom,224,y}]}
+{tuple,229,[{atom,229,x},{atom,229,y}]}
 ```
 
 **`#my_record{foo = X}`**
 
 ```Erlang
-{record,225,my_record,[{record_field,225,{atom,225,foo},{var,225,'X'}}]}
+{record,230,my_record,[{record_field,230,{atom,230,foo},{var,230,'X'}}]}
 ```
 
 **`Rec#my_record.foo`**
 
 ```Erlang
-{record_field,226,{var,226,'Rec'},my_record,{atom,226,foo}}
+{record_field,231,{var,231,'Rec'},my_record,{atom,231,foo}}
 ```
 
 **`fun f/1`**
 
 ```Erlang
-{'fun',227,{function,f,1}}
+{'fun',232,{function,f,1}}
 ```
 
 **`fun m:f/1`**
 
 ```Erlang
-{'fun',228,{function,{atom,228,m},{atom,228,f},{integer,228,1}}}
+{'fun',233,{function,{atom,233,m},{atom,233,f},{integer,233,1}}}
 ```
 
 **`X`**
 
 ```Erlang
-{var,231,'X'}
+{var,236,'X'}
 ```
 
 **`_`**
 
 ```Erlang
-{var,232,'_'}
+{var,237,'_'}
 ```
 
 **`not true`**
 
 ```Erlang
-{op,235,'not',{atom,235,true}}
+{op,240,'not',{atom,240,true}}
 ```
 
 **`1 + 1`**
 
 ```Erlang
-{op,236,'+',{integer,236,1},{integer,236,1}}
+{op,241,'+',{integer,241,1},{integer,241,1}}
 ```
 
 **`1 == 1`**
 
 ```Erlang
-{op,237,'==',{integer,237,1},{integer,237,1}}
+{op,242,'==',{integer,242,1},{integer,242,1}}
 ```
 
 **`X and Y`**
 
 ```Erlang
-{op,238,'and',{var,238,'X'},{var,238,'Y'}}
+{op,243,'and',{var,243,'X'},{var,243,'Y'}}
 ```
 
 **`X andalso Y`**
 
 ```Erlang
-{op,239,'andalso',{var,239,'X'},{var,239,'Y'}}
+{op,244,'andalso',{var,244,'X'},{var,244,'Y'}}
 ```
 
 **`f(42)`**
 
 ```Erlang
-{call,242,{atom,242,f},[{integer,242,42}]}
+{call,247,{atom,247,f},[{integer,247,42}]}
 ```
 
 **`m:f(42)`**
 
 ```Erlang
-{call,243,{remote,243,{atom,243,m},{atom,243,f}},[{integer,243,42}]}
+{call,248,{remote,248,{atom,248,m},{atom,248,f}},[{integer,248,42}]}
 ```
 
 **`X = 42`**
 
 ```Erlang
-{match,244,{var,244,'X'},{integer,244,42}}
+{match,249,{var,249,'X'},{integer,249,42}}
 ```
 
 **`fun(42) -> true; (_) -> false end`**
 
 ```Erlang
-{'fun',245,
-       {clauses,[{clause,245,[{integer,245,42}],[],[{atom,245,true}]},
-                 {clause,245,[{var,245,'_'}],[],[{atom,245,false}]}]}}
+{'fun',250,
+       {clauses,[{clause,250,[{integer,250,42}],[],[{atom,250,true}]},
+                 {clause,250,[{var,250,'_'}],[],[{atom,250,false}]}]}}
 ```
 
 **`fun(X) when is_atom(X) -> X end`**
 
 ```Erlang
-{'fun',246,
-       {clauses,[{clause,246,
-                         [{var,246,'X'}],
-                         [[{call,246,{atom,246,is_atom},[{var,246,'X'}]}]],
-                         [{var,246,'X'}]}]}}
+{'fun',251,
+       {clauses,[{clause,251,
+                         [{var,251,'X'}],
+                         [[{call,251,{atom,251,is_atom},[{var,251,'X'}]}]],
+                         [{var,251,'X'}]}]}}
 ```
 
 **`if P -> hello; true -> ok end`**
 
 ```Erlang
-{'if',247,
-      [{clause,247,[],[[{var,247,'P'}]],[{atom,247,hello}]},
-       {clause,247,[],[[{atom,247,true}]],[{atom,247,ok}]}]}
+{'if',252,
+      [{clause,252,[],[[{var,252,'P'}]],[{atom,252,hello}]},
+       {clause,252,[],[[{atom,252,true}]],[{atom,252,ok}]}]}
 ```
 
 **`case foo of bar -> baz; _ -> ok end`**
 
 ```Erlang
-{'case',248,
-        {atom,248,foo},
-        [{clause,248,[{atom,248,bar}],[],[{atom,248,baz}]},
-         {clause,248,[{var,248,'_'}],[],[{atom,248,ok}]}]}
+{'case',253,
+        {atom,253,foo},
+        [{clause,253,[{atom,253,bar}],[],[{atom,253,baz}]},
+         {clause,253,[{var,253,'_'}],[],[{atom,253,ok}]}]}
 ```
 
 **`begin ok, ok end`**
 
 ```Erlang
-{block,249,[{atom,249,ok},{atom,249,ok}]}
+{block,254,[{atom,254,ok},{atom,254,ok}]}
 ```
 
 **`Pid ! message`**
 
 ```Erlang
-{op,250,'!',{var,250,'Pid'},{atom,250,message}}
+{op,255,'!',{var,255,'Pid'},{atom,255,message}}
 ```
 
 **`receive X -> ok end`**
 
 ```Erlang
-{'receive',251,[{clause,251,[{var,251,'X'}],[],[{atom,251,ok}]}]}
+{'receive',256,[{clause,256,[{var,256,'X'}],[],[{atom,256,ok}]}]}
 ```
 
 **`receive X -> ok after 1000 -> timeout end`**
 
 ```Erlang
-{'receive',252,
-           [{clause,252,[{var,252,'X'}],[],[{atom,252,ok}]}],
-           {integer,252,1000},
-           [{atom,252,timeout}]}
+{'receive',257,
+           [{clause,257,[{var,257,'X'}],[],[{atom,257,ok}]}],
+           {integer,257,1000},
+           [{atom,257,timeout}]}
 ```
 
 **`try f() catch error:E -> fail end`**
 
 ```Erlang
-{'try',253,
-       [{call,253,{atom,253,f},[]}],
+{'try',258,
+       [{call,258,{atom,258,f},[]}],
        [],
-       [{clause,253,
-                [{tuple,253,[{atom,253,error},{var,253,'E'},{var,253,'_'}]}],
+       [{clause,258,
+                [{tuple,258,[{atom,258,error},{var,258,'E'},{var,258,'_'}]}],
                 [],
-                [{atom,253,fail}]}],
+                [{atom,258,fail}]}],
        []}
 ```
 
 **`try f(), g() of X when is_integer(X) -> X catch C:E when is_tuple(E) -> fail after afterwards() end`**
 
 ```Erlang
-{'try',254,
-       [{call,254,{atom,254,f},[]},{call,254,{atom,254,g},[]}],
-       [{clause,254,
-                [{var,254,'X'}],
-                [[{call,254,{atom,254,is_integer},[{var,254,'X'}]}]],
-                [{var,254,'X'}]}],
-       [{clause,254,
-                [{tuple,254,[{var,254,'C'},{var,254,'E'},{var,254,'_'}]}],
-                [[{call,254,{atom,254,is_tuple},[{var,254,'E'}]}]],
-                [{atom,254,fail}]}],
-       [{call,254,{atom,254,afterwards},[]}]}
+{'try',259,
+       [{call,259,{atom,259,f},[]},{call,259,{atom,259,g},[]}],
+       [{clause,259,
+                [{var,259,'X'}],
+                [[{call,259,{atom,259,is_integer},[{var,259,'X'}]}]],
+                [{var,259,'X'}]}],
+       [{clause,259,
+                [{tuple,259,[{var,259,'C'},{var,259,'E'},{var,259,'_'}]}],
+                [[{call,259,{atom,259,is_tuple},[{var,259,'E'}]}]],
+                [{atom,259,fail}]}],
+       [{call,259,{atom,259,afterwards},[]}]}
 ```
 
 **`catch X`**
 
 ```Erlang
-{'catch',255,{var,255,'X'}}
+{'catch',260,{var,260,'X'}}
 ```
 
 **`[ 2 || is_integer(2) ]`**
 
 ```Erlang
-{lc,258,{integer,258,2},[{call,258,{atom,258,is_integer},[{integer,258,2}]}]}
+{lc,263,{integer,263,2},[{call,263,{atom,263,is_integer},[{integer,263,2}]}]}
 ```
 
 **`[ X || X <- XS, is_atom(X) ]`**
 
 ```Erlang
-{lc,259,
-    {var,259,'X'},
-    [{generate,259,{var,259,'X'},{var,259,'XS'}},
-     {call,259,{atom,259,is_atom},[{var,259,'X'}]}]}
+{lc,264,
+    {var,264,'X'},
+    [{generate,264,{var,264,'X'},{var,264,'XS'}},
+     {call,264,{atom,264,is_atom},[{var,264,'X'}]}]}
 ```
 
 **`<< <<X:4>> || <<X:4>> <= Bin, X /= 0 >>`**
 
 ```Erlang
-{bc,260,
-    {bin,260,[{bin_element,260,{var,260,'X'},{integer,260,4},default}]},
-    [{b_generate,260,
-                 {bin,260,
-                      [{bin_element,260,
-                                    {var,260,'X'},
-                                    {integer,260,4},
+{bc,265,
+    {bin,265,[{bin_element,265,{var,265,'X'},{integer,265,4},default}]},
+    [{b_generate,265,
+                 {bin,265,
+                      [{bin_element,265,
+                                    {var,265,'X'},
+                                    {integer,265,4},
                                     default}]},
-                 {var,260,'Bin'}},
-     {op,260,'/=',{var,260,'X'},{integer,260,0}}]}
+                 {var,265,'Bin'}},
+     {op,265,'/=',{var,265,'X'},{integer,265,0}}]}
 ```
 

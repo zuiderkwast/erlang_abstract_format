@@ -45,8 +45,13 @@
 -type maybe(A) :: {just, A} | nothing.
 -callback my_function() -> ok.
 -spec my_function() -> ok.
+-spec my_function(A :: atom()) -> B when B :: boolean().
 my_function() -> ok.
 my_function(X) when X > 2 -> X + 1.
+
+
+
+
 
 -doc
 "Record declarations: "
