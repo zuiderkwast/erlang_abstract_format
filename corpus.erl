@@ -217,7 +217,7 @@ my_function(X) when X > 2 -> X + 1.
 -type t() :: neg_integer().
 
 -doc
-"Exressions\n"
+"Expressions\n"
 "----------\n".
 
 %% Terms
@@ -236,6 +236,7 @@ f() -> #{old_key := updated_value, new_key => 42}.
 f() -> {x, y}.
 f() -> #my_record{foo = X}.
 f() -> Rec#my_record.foo.
+f() -> #my_record.foo.
 f() -> fun f/1.
 f() -> fun m:f/1.
 
@@ -256,6 +257,7 @@ f() -> m:f(42).
 f() -> X = 42.
 f() -> fun (42) -> true; (_) -> false end.
 f() -> fun (X) when is_atom(X) -> X end.
+f() -> fun F(0) -> 0; F(X) -> F(X - 1) end.
 f() -> if P -> hello; true -> ok end.
 f() -> case foo of bar -> baz; _ -> ok end.
 f() -> begin ok, ok end.
